@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 //import * as React from 'react';
-
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -8,8 +7,10 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
 import Task from './Task';
-
-export default function ProjectDetails({projectData,deleteProject}) {
+import { ProjectDataContext } from '../store/Context';
+import { useContext } from 'react';
+export default function ProjectDetails({deleteProject}){
+  const projectData=useContext(ProjectDataContext);
   return (
     <div className='text-center'>
     <Card sx={{ minWidth: 575 }}>
@@ -39,7 +40,6 @@ export default function ProjectDetails({projectData,deleteProject}) {
       </CardContent>
     
       <Task/>
-     
       
       <CardActions>
          <Button variant="outlined" startIcon={<DeleteIcon/>} onClick={()=>deleteProject(projectData)}>

@@ -8,22 +8,19 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-
+import { NewContext } from './store/Context';
+import { ProjectDataContext } from './store/Context';
 
 function App(){
-
+ 
   const[projectState,setProjectState]=useState({
     selectedProjectId:undefined,
     projects:[]
   });
 
   const[projectData,setProjectData]=useState({});
-
-
-
   let content;
   function handelStartAddProject(){
-    
     setProjectState((prevProject)=>{
       return(
         {
@@ -35,9 +32,8 @@ function App(){
   }
 
 
-
   function handelAddProject(projectData){
-    
+  
     setProjectState((prevState)=>{
       const newProject={
         ...projectData
@@ -68,7 +64,11 @@ function App(){
     content=<NoProjectSelected onStartAddProject={handelStartAddProject}/>
   }
   else{
-    content=<ProjectDetails projectData={projectData} deleteProject={handelDeleteProject}/>
+
+    content=
+    <ProjectDataContext.Provider value={projectData}>
+    <ProjectDetails deleteProject={handelDeleteProject}/>
+    </ProjectDataContext.Provider>
   }
 
   function projectDetailsHandler(projectData){
@@ -84,10 +84,12 @@ function App(){
   console.log(projectState);
 
   return (
+    <NewContext.Provider value={projectState}>
     <main className='h-screen my-8 flex gap-8'>
-    <ProjectSidebar  projects={projectState.projects} onStartAddProject={handelStartAddProject} onClickProject={projectDetailsHandler}/>
+    <ProjectSidebar onStartAddProject={handelStartAddProject} onClickProject={projectDetailsHandler}/>
     {content}
     </main>
+    </NewContext.Provider>
   )
 }
 export default App;
