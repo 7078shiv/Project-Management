@@ -8,45 +8,51 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
 import Task from './Task';
 import { ProjectDataContext } from '../store/Context';
-import { useContext } from 'react';
-export default function ProjectDetails({deleteProject}){
-  const projectData=useContext(ProjectDataContext);
+
+export default function ProjectDetails(){
+  
   return (
-    <div className='text-center'>
-    <Card sx={{ minWidth: 575 }}>
-      <CardContent>
-      <Typography variant="h5" component="div">
-          Project Title
-        </Typography>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          {projectData.title}
-        </Typography>
-
-        <Typography variant="h5" component="div">
-          Project Description
-        </Typography>
-        
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-        {projectData.description}
-        </Typography>
-
-        <Typography variant="h5" component="div">
-          Project Date
-        </Typography>
-
-        <Typography variant="body2">
-          {projectData.date}
-        </Typography>
-      </CardContent>
-    
-      <Task/>
+    <ProjectDataContext.Consumer>
+      {({deleteProject,projectDataObject})=>{
+        return(
+          <div className='text-center'>
+          <Card sx={{ minWidth: 575 }}>
+            <CardContent>
+            <Typography variant="h5" component="div">
+                Project Title
+              </Typography>
+              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                {projectDataObject.title}
+              </Typography>
       
-      <CardActions>
-         <Button variant="outlined" startIcon={<DeleteIcon/>} onClick={()=>deleteProject(projectData)}>
-           DeleteProject
-         </Button>
-      </CardActions>
-    </Card>
-    </div>
+              <Typography variant="h5" component="div">
+                Project Description
+              </Typography>
+              
+              <Typography sx={{ mb: 1.5 }} color="text.secondary">
+              {projectDataObject.description}
+              </Typography>
+      
+              <Typography variant="h5" component="div">
+                Project Date
+              </Typography>
+      
+              <Typography variant="body2">
+                {projectDataObject.date}
+              </Typography>
+            </CardContent>
+          
+            <Task/>
+            
+            <CardActions>
+               <Button variant="outlined" startIcon={<DeleteIcon/>} onClick={()=>deleteProject(projectDataObject)}>
+                 DeleteProject
+               </Button>
+            </CardActions>
+          </Card>
+          </div>
+        )
+      }}
+    </ProjectDataContext.Consumer>
   );
 }

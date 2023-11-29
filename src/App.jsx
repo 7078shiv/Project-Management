@@ -18,7 +18,10 @@ function App(){
     projects:[]
   });
 
-  const[projectData,setProjectData]=useState({});
+  const[projectData,setProjectData]=useState({
+    projectDataObject:{}
+  });
+  
   let content;
   function handelStartAddProject(){
     setProjectState((prevProject)=>{
@@ -31,6 +34,8 @@ function App(){
     })
   }
 
+  
+  
 
   function handelAddProject(projectData){
   
@@ -57,22 +62,16 @@ function App(){
     })
   }
 
-  if(projectState.selectedProjectId===null){
-    content=<NewProject onAdd={handelAddProject} deleteProject={handelDeleteProject}/>
-  }
-  else if(projectState.selectedProjectId===undefined){
-    content=<NoProjectSelected onStartAddProject={handelStartAddProject}/>
-  }
-  else{
-
-    content=
-    <ProjectDataContext.Provider value={projectData}>
-    <ProjectDetails deleteProject={handelDeleteProject}/>
-    </ProjectDataContext.Provider>
-  }
-
   function projectDetailsHandler(projectData){
-    setProjectData(projectData);
+    setProjectData(
+      ()=>{
+        return(
+          {
+            projectDataObject:projectData
+          }
+        )
+      }
+    );
     setProjectState((prevState)=>{
       return{
         ...prevState,
@@ -82,11 +81,43 @@ function App(){
   }
 
   console.log(projectState);
+  
+
+  const NewCtxValue={
+    selectedProjectId:projectState.selectedProjectId,
+    projects:projectState.projects,
+    onStartAddProject:handelStartAddProject,
+    onClickProject:projectDetailsHandler
+  }
+
+  const ProjectDataCtxValue={
+    projectDataObject:projectData.projectDataObject,
+    deleteProject:handelDeleteProject,
+    addProject:handelAddProject
+  }
+
+  if(projectState.selectedProjectId===null){
+    content=
+    <ProjectDataContext.Provider value={ProjectDataCtxValue}>
+    <NewProject />
+    </ProjectDataContext.Provider>
+  }
+  else if(projectState.selectedProjectId===undefined){
+    content=<NoProjectSelected/>
+  }
+  else{
+    content=
+    <ProjectDataContext.Provider value={ProjectDataCtxValue}>
+    <ProjectDetails/>
+    </ProjectDataContext.Provider>
+  }
+
+
 
   return (
-    <NewContext.Provider value={projectState}>
+    <NewContext.Provider value={NewCtxValue}>
     <main className='h-screen my-8 flex gap-8'>
-    <ProjectSidebar onStartAddProject={handelStartAddProject} onClickProject={projectDetailsHandler}/>
+    <ProjectSidebar/>
     {content}
     </main>
     </NewContext.Provider>
