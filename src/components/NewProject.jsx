@@ -11,8 +11,9 @@ import { useRef } from "react";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import { ProjectDataContext } from "../store/Context";
+import axios from "axios";
 // eslint-disable-next-line react/prop-types
-export default function NewProject() {
+export default function NewProject(){
   const title = useRef();
   const description = useRef();
   const date = useRef();
@@ -22,7 +23,8 @@ export default function NewProject() {
   return (
     <ProjectDataContext.Consumer>
       {({ addProject, deleteProject })=>{
-        function handelSave(){
+       async function handelSave(){
+        try{
           const enteredTitle = title.current.value;
           const enteredDescription = description.current.value;
           const enteredDate = date.current.value;
@@ -34,11 +36,25 @@ export default function NewProject() {
             dialog.current.open();
             return;
           }
+          const response = axios.post("http://localhost:4000/api/v1/projectData/add-project-data",
+          {
+            id:0,
+          projectTitle:enteredTitle,
+          description: enteredDescription,
+          tasks: []
+          }
+          ) 
+          console.log("project added successfully" + response);
           addProject({
-            title: enteredTitle,
+            projectTitle: enteredTitle,
             description: enteredDescription,
             date: enteredDate,
+            tasks:[]
           });
+        }
+        catch(error){
+          console.log("Error while adding Projects "+error);
+        }
         }
         return (
           <>

@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState,useEffect} from 'react'
 import './App.css'
 import ProjectSidebar from './components/ProjectSidebar'
 import NewProject from './components/NewProject';
@@ -10,6 +10,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { NewContext } from './store/Context';
 import { ProjectDataContext } from './store/Context';
+import axios from "axios";
 
 function App(){
  
@@ -21,6 +22,31 @@ function App(){
   const[projectData,setProjectData]=useState({
     projectDataObject:{}
   });
+
+  useEffect(() => {
+    // Function to fetch project data
+    const fetchProjectData = async () => {
+      try {
+        const response = await axios.get('http://localhost:4000/api/v1/projectData/get-all-project-details');
+        const projects = response.data.data; // Assuming the projects are in the 'data' property of the response
+        const updatedProjects = projects.filter((item) => typeof item === 'object');
+        console.log(updatedProjects);
+        setProjectState((prevState) => ({
+          ...prevState,
+          projects: updatedProjects,
+        }));
+       
+      } catch (error) {
+        console.error('Error fetching project data:', error);
+      }
+    };
+
+    // Call the fetchProjectData function when the component mounts
+    fetchProjectData();
+  }, []); // The empty dependency array ensures this effect runs once when the component mounts
+
+
+ 
   
   let content;
   function handelStartAddProject(){
@@ -33,9 +59,6 @@ function App(){
       )
     })
   }
-
-  
-  
 
   function handelAddProject(projectData){
   
@@ -51,9 +74,12 @@ function App(){
     })
   }
 
-  function handelDeleteProject(projectData){
+  async function handelDeleteProject(projectData){
+    try{
+     const response = axios.delete(`http://localhost:4000/api/v1/projectData/delete-project-by-id/${projectData.id}`)
+     console.log(response);
     setProjectState((prevState)=>{
-      const modifyProjects=prevState.projects.filter((o)=>o!==projectData);
+      const modifyProjects=prevState.projects.filter((o)=>o.id!==projectData.id);
       return {
         ...prevState,
         projects:modifyProjects,
@@ -61,13 +87,21 @@ function App(){
       }
     })
   }
+  catch(error){
+    console.log("error while deleting project"+error);
+  }
+  }
 
-  function projectDetailsHandler(projectData){
+  
+
+   function projectDetailsHandler(projectData){
+
+    //console.log(projectData);
     setProjectData(
       ()=>{
         return(
           {
-            projectDataObject:projectData
+            projectDataObject:{...projectData}
           }
         )
       }
@@ -80,8 +114,8 @@ function App(){
     })
   }
 
-  console.log(projectState);
-  
+
+
 
   const NewCtxValue={
     selectedProjectId:projectState.selectedProjectId,
@@ -93,7 +127,7 @@ function App(){
   const ProjectDataCtxValue={
     projectDataObject:projectData.projectDataObject,
     deleteProject:handelDeleteProject,
-    addProject:handelAddProject
+    addProject:handelAddProject,
   }
 
   if(projectState.selectedProjectId===null){
@@ -108,10 +142,11 @@ function App(){
   else{
     content=
     <ProjectDataContext.Provider value={ProjectDataCtxValue}>
-    <ProjectDetails/>
+    
+    <ProjectDetails projectData={projectData}/>
+   
     </ProjectDataContext.Provider>
   }
-
 
 
   return (

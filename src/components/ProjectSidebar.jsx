@@ -1,10 +1,8 @@
 /* eslint-disable react/prop-types */
 import Button from "./ButtonUsage";
 import { NewContext } from "../store/Context";
-//import { useContext } from "react";
 export default function ProjectSidebar()
 {
-  //const {projects,onClickProject,onStartAddProject}=useContext(NewContext);
   return (
     <>
     <NewContext.Consumer>
@@ -24,13 +22,13 @@ export default function ProjectSidebar()
          {
            projects.length>0 &&
          <ul className="mt-8">
-           {projects.map((value, index) => (
+           {projects.map((value, index) =>(
              <li key={index}>
                <button
                  onClick={() => onClickProject(value)}
                  className="w-full text-left px-3 py-3 text-stone-400 rounded-sm my-4 hover:bg-stone-800 hover:text-stone-100"
                >
-                 {value.title}
+                 {value.projectTitle}
                </button>
              </li>
            ))}
