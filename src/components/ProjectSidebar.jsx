@@ -1,13 +1,12 @@
 /* eslint-disable react/prop-types */
 import Button from "./ButtonUsage";
 import { NewContext } from "../store/Context";
+import { useContext } from "react";
 export default function ProjectSidebar()
 {
-  return (
-    <>
-    <NewContext.Consumer>
-      {({projects,onClickProject,onStartAddProject})=>{
+  const {projects,onClickProject,onStartAddProject} = useContext(NewContext);
         return(
+          <>
          <aside className="w-1/3  bg-stone-900 text-white px-8 py-16 md:w-72 rounded-r-xl">
          <h2 className="mb-8 font-bold uppercase md:text-xl text-stone-200">
            Your Projects
@@ -35,9 +34,6 @@ export default function ProjectSidebar()
          </ul>
          }
        </aside>
-        )
-      }}
-      </NewContext.Consumer>
     </>
   );
 }

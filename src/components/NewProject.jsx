@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import ButtonUsage from "./ButtonUsage";
 import EmptySaveModal from "./EmptySaveModal";
 import Input from "./Input";
@@ -19,10 +19,8 @@ export default function NewProject(){
   const date = useRef();
   const dialog = useRef();
   const [value, setValue] = React.useState(2);
-
-  return (
-    <ProjectDataContext.Consumer>
-      {({ addProject, deleteProject })=>{
+  const{addProject,deleteProject} = useContext(ProjectDataContext);
+  
        async function handelSave(){
         try{
           const enteredTitle = title.current.value;
@@ -32,7 +30,7 @@ export default function NewProject(){
             enteredTitle === "" ||
             enteredDescription === "" ||
             enteredDate === ""
-          ) {
+          ){
             dialog.current.open();
             return;
           }
@@ -56,7 +54,7 @@ export default function NewProject(){
           console.log("Error while adding Projects "+error);
         }
         }
-        return (
+        return(
           <>
             <EmptySaveModal ref={dialog} buttonName="Ok">
               <DialogTitle id="alert-dialog-title">
@@ -100,7 +98,4 @@ export default function NewProject(){
             </div>
           </>
         );
-      }}
-    </ProjectDataContext.Consumer>
-  );
 }
